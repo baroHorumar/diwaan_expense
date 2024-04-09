@@ -10,4 +10,78 @@
     <link rel="stylesheet" href="assets/plugins/fontawesome/css/fontawesome.min.css">
     <link rel="stylesheet" href="assets/plugins/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        @media print {
+            .print-button {
+                display: none;
+            }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .report-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .report-subtitle {
+            font-size: 20px;
+            margin-top: 5px;
+        }
+
+        address {
+            margin-top: 20px;
+        }
+
+        address p {
+            margin: 5px 0;
+        }
+
+        @media print {
+            .header {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
+            .header-hidden {
+                display: none;
+            }
+
+            .report-title {
+                font-size: 36px;
+                /* Increased font size */
+                font-weight: bold;
+                margin-bottom: 10px;
+                /* Adjusted margin */
+            }
+
+            .report-subtitle {
+                font-size: 30px;
+                /* Increased font size */
+                margin-top: 10px;
+                /* Adjusted margin */
+            }
+
+            address {
+                margin-top: 20px;
+            }
+
+            address p {
+                margin: 10px 0;
+                /* Adjusted margin */
+            }
+        }
+
+        @media print {
+            .header.header-one {
+                display: none;
+            }
+        }
+    </style>
+
+
 </head>

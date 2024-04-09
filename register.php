@@ -44,7 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
                 $role = "Admin";
                 $status = 0;
                 $deactivation_date = date('Y-m-d', strtotime('+30 days'));
-
                 // Insert admin user information
                 $stmt = $conn->prepare("INSERT INTO users (full_name, username, password, registration_date, deactivation_date, role, status, company_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
                 $stmt->bind_param("ssssssii", $full_name, $username, $hashedPassword, date('Y-m-d'), $deactivation_date, $role, $status, $companyId);

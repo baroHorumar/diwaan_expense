@@ -1,8 +1,5 @@
 <?php
 session_start();
-if (!$_SESSION['logn']) {
-    // header('location: login.php');
-}
 require './includes/header.php';
 require './includes/conn.php';
 require './includes/sidebar.php';

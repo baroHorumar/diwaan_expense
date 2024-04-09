@@ -5,15 +5,16 @@
     <div class="header header-one">
 
       <div class="header-left header-left-one">
-        <a href="index.html" class="logo">
-          <img src="assets/img/logo.png" alt="Logo">
-        </a>
-        <a href="index.html" class="white-logo">
+        <a href="index.php" class="white-logo">
           <img src="assets/img/logo-white.png" alt="Logo">
         </a>
-        <a href="index.html" class="logo logo-small">
-          <img src="assets/img/logo-small.png" alt="Logo" width="30" height="30">
+        <a href="index.php" class="white-logo">
+          <img src="assets/img/logo-white.png" alt="Logo">
         </a>
+        <a href="index.php" class="white-logo">
+          <img src="assets/img/logo-white.png" alt="Logo">
+        </a>
+
       </div>
 
 
@@ -146,23 +147,20 @@
         <li class="nav-item dropdown has-arrow main-drop">
           <a href="#" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
             <span class="user-img">
-              <img src="assets/img/profiles/avatar-01.jpg" alt="">
+              <img src="assets/img/profiles/images.png" alt="">
               <span class="status online"></span>
             </span>
-            <span>Admin</span>
+            <span><?php echo isset($_SESSION['name']) ? $_SESSION['name'] : ''; ?></span>
           </a>
           <div class="dropdown-menu">
-            <a class="dropdown-item" href="profile.html"><i data-feather="user" class="me-1"></i> Profile</a>
-            <a class="dropdown-item" href="settings.html"><i data-feather="settings" class="me-1"></i> Settings</a>
-            <a class="dropdown-item" href="login.html"><i data-feather="log-out" class="me-1"></i> Logout</a>
+            <a class="dropdown-item" href="profile.php"><i data-feather="user" class="me-1"></i> Profile</a>
+            <a class="dropdown-item" href="logout.php"><i data-feather="log-out" class="me-1"></i> Logout</a>
           </div>
         </li>
 
       </ul>
 
     </div>
-
-
     <div class="sidebar" id="sidebar">
       <div class="sidebar-inner slimscroll">
         <div id="sidebar-menu" class="sidebar-menu">
@@ -178,10 +176,10 @@
               <a href="expenses.php"><i data-feather="file-text"></i> <span>Dhakhli / Kharash </span></a>
             </li>
             <li>
-              <a href="invoice-items.html"><i data-feather="star"></i> <span>Shaqaale</span></a>
+              <a href="all_employees.php"><i data-feather="user"></i> <span>Shaqaale</span></a>
             </li>
             <li>
-              <a href="payments.html"><i data-feather="credit-card"></i> <span>Payments</span></a>
+              <a href="reports.php"><i data-feather="file"></i> <span>Report</span></a>
             </li>
           </ul>
         </div>

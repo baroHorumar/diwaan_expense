@@ -2,33 +2,28 @@
 require 'includes/header.php';
 session_start();
 require 'includes/conn.php';
-
 if (isset($_POST['email']) && isset($_POST['password'])) {
   $email = $_POST['email'];
   $password = $_POST['password'];
-
-  $stmt = $conn->prepare("SELECT user_id, company_id, branch_id FROM users WHERE username = ? AND password = ?");
+  $stmt = $conn->prepare("SELECT full_name, user_id, company_id, branch_id, deactivation_date, role FROM users WHERE username = ? AND password = ?");
   $stmt->bind_param("ss", $email, $password);
   $stmt->execute();
   $result = $stmt->get_result();
-
   if ($result->num_rows === 1) {
-    // Fetch user details
     $row = $result->fetch_assoc();
-    $user_id = $row['user_id'];
-    $company_id = $row['company_id'];
-    $branch_id = $row['branch_id'];
-
-    // Login successful
     $_SESSION['login'] = true;
-    $_SESSION['user_id'] = $user_id;
-    $_SESSION['company_id'] = $company_id; // Corrected variable name
-    $_SESSION['branch_id'] = $branch_id;
-
-    header('Location: index.php');
-    exit;
+    $_SESSION['user_id'] =   $row['user_id'];
+    $_SESSION['name'] =   $row['full_name'];
+    $_SESSION['company_id'] =   $row['company_id']; // Corrected variable name
+    $_SESSION['branch_id'] = $row['branch_id'];
+    $_SESSION['deactivation_date'] = $row['deactivation_date'];
+    if ($row['role'] == 'Admin') {
+      header('Location: index.php');
+      exit;
+    } else {
+      header('Location: user/index.php');
+    }
   } else {
-    // Login failed
     $_SESSION['login'] = false;
     header('Location: login.php'); // Redirect back to login page
     exit;
