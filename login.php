@@ -2,28 +2,43 @@
 require 'includes/header.php';
 session_start();
 require 'includes/conn.php';
+
 if (isset($_POST['email']) && isset($_POST['password'])) {
   $email = $_POST['email'];
   $password = $_POST['password'];
-  $stmt = $conn->prepare("SELECT full_name, user_id, company_id, branch_id, deactivation_date, role FROM users WHERE username = ? AND password = ?");
-  $stmt->bind_param("ss", $email, $password);
+
+  $stmt = $conn->prepare("SELECT user_id, full_name, company_id, branch_id, deactivation_date, role, password FROM users WHERE username = ?");
+  $stmt->bind_param("s", $email);
   $stmt->execute();
   $result = $stmt->get_result();
+
   if ($result->num_rows === 1) {
     $row = $result->fetch_assoc();
-    $_SESSION['login'] = true;
-    $_SESSION['user_id'] =   $row['user_id'];
-    $_SESSION['name'] =   $row['full_name'];
-    $_SESSION['company_id'] =   $row['company_id']; // Corrected variable name
-    $_SESSION['branch_id'] = $row['branch_id'];
-    $_SESSION['deactivation_date'] = $row['deactivation_date'];
-    if ($row['role'] == 'Admin') {
-      header('Location: index.php');
-      exit;
+
+    // Verify the password
+    if (password_verify($password, $row['password'])) {
+      $_SESSION['login'] = true;
+      $_SESSION['user_id'] = $row['user_id'];
+      $_SESSION['name'] = $row['full_name'];
+      $_SESSION['company_id'] = $row['company_id'];
+      $_SESSION['branch_id'] = $row['branch_id'];
+      $_SESSION['deactivation_date'] = $row['deactivation_date'];
+
+      if ($row['role'] == 'Admin') {
+        header('Location: index.php');
+        exit;
+      } else {
+        header('Location: user/index.php');
+        exit;
+      }
     } else {
-      header('Location: user/index.php');
+      // Password verification failed
+      $_SESSION['login'] = false;
+      header('Location: login.php'); // Redirect back to login page
+      exit;
     }
   } else {
+    // No user found with the provided email
     $_SESSION['login'] = false;
     header('Location: login.php'); // Redirect back to login page
     exit;

@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['employee_update'])) {
                 $stmt_user = $conn->prepare("UPDATE users SET full_name=?, password=?, status=? WHERE user_id=?");
                 $stmt_user->bind_param("ssii", $cust_full_name, $hashedPassword, $status, $_SESSION[' $user_id_empl']);
             } else {
-                $stmt_user = $conn->prepare("UPDATE users SET full_name=?, password=?, status=? WHERE employee_id=?");
+                $stmt_user = $conn->prepare("UPDATE users SET full_name=?, password=?, status=? WHERE user_id=?");
                 $stmt_user->bind_param("ssii", $cust_full_name, $password, $status, $employee_id);
             }
             if ($stmt_user->execute()) {
@@ -159,9 +159,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_employee'])) {
                                         </select>
                                     </div>
                                 </div>
-                                <input type="hidden" name="employee_id" value="<?php echo $employee_id; ?>">
                             </div>
                             <div class="text-center">
+                                <input type="hidden" name="employee_id" value="<?php echo $employee_id; ?>">
                                 <button type="submit" name="employee_update" class="btn btn-primary">Submit</button>
                             </div>
                         </form>

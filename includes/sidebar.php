@@ -1,7 +1,6 @@
 <body class="nk-body bg-lighter npc-default has-sidebar no-touch nk-nio-theme">
 
   <div class="main-wrapper">
-
     <div class="header header-one">
 
       <div class="header-left header-left-one">
@@ -178,9 +177,17 @@
             <li>
               <a href="all_employees.php"><i data-feather="user"></i> <span>Shaqaale</span></a>
             </li>
+            <li class="submenu">
+              <a href="#"><i data-feather="dollar-sign"></i> <span>Lacag</span> <span class="menu-arrow"></span></a>
+              <ul style="display: none;">
+                <li><a href="money.php">Lacagaha</a></li>
+                <li><a href="exchange.php">Sarifka Lacagaha</a></li>
+              </ul>
+            </li>
             <li>
               <a href="reports.php"><i data-feather="file"></i> <span>Report</span></a>
             </li>
+
           </ul>
         </div>
       </div>

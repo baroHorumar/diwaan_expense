@@ -1,8 +1,38 @@
 ﻿<?php
+session_start();
+if (!isset($_SESSION['login'])) {
+    header('location: login.php');
+}
 require './includes/conn.php';
 require './includes/header.php';
 require './includes/sidebar.php';
+
+$company_id = $_SESSION['company_id'];
+
+$company_query = "SELECT * FROM company WHERE company_id = ?";
+$stmt = $conn->prepare($company_query);
+$stmt->bind_param("i", $company_id);
+$stmt->execute();
+$company_result = $stmt->get_result();
+$company_data = $company_result->fetch_assoc();
+
+
+$company_branch_query = "SELECT * FROM company_branch WHERE company_id = ?";
+$stmt = $conn->prepare($company_branch_query);
+$stmt->bind_param("i", $company_id);
+$stmt->execute();
+$company_branch_result = $stmt->get_result();
+$company_branch_data = $company_branch_result->fetch_assoc();
+
+$user_id = $_SESSION['user_id'];
+$user_query = "SELECT * FROM users WHERE user_id = ?";
+$stmt = $conn->prepare($user_query);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$user_result = $stmt->get_result();
+$user_data = $user_result->fetch_assoc();
 ?>
+
 <div class="page-wrapper">
     <div class="content container-fluid">
         <div class="row justify-content-lg-center">
@@ -19,141 +49,118 @@ require './includes/sidebar.php';
                         </div>
                     </div>
                 </div>
-
-                <div class="profile-cover">
-                    <div class="profile-cover-wrap">
-                        <img class="profile-cover-img" src="assets/img/profiles/avatar-02.jpg" alt="Profile Cover">
-
-                        <div class="cover-content">
-                            <div class="custom-file-btn">
-                                <input type="file" class="custom-file-btn-input" id="cover_upload">
-                                <label class="custom-file-btn-label btn btn-sm btn-white" for="cover_upload">
-                                    <i class="fas fa-camera"></i>
-                                    <span class="d-none d-sm-inline-block ms-1">Update Cover</span>
-                                </label>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
                 <div class="text-center mb-5">
-                    <label class="avatar avatar-xxl profile-cover-avatar" for="avatar_upload">
-                        <img class="avatar-img" src="assets/img/profiles/avatar-02.jpg" alt="Profile Image">
-                        <input type="file" id="avatar_upload">
-                        <span class="avatar-edit">
-                            <i data-feather="edit-2" class="avatar-uploader-icon shadow-soft"></i>
-                        </span>
-                    </label>
-                    <h2>Charles Hafner <i class="fas fa-certificate text-primary small" data-toggle="tooltip" data-placement="top" title="" data-original-title="Verified"></i></h2>
+                    <h2> <?php echo $user_data['full_name']; ?> <i class="fas fa-certificate text-primary small" data-toggle="tooltip" data-placement="top" title="" data-original-title="Verified"></i></h2>
                     <ul class="list-inline">
                         <li class="list-inline-item">
-                            <i class="far fa-building"></i> <span>Hafner Pvt Ltd.</span>
+                            <i class="far fa-building"></i> <span> <?php echo $company_data['business_name']; ?></span>
                         </li>
                         <li class="list-inline-item">
-                            <i class="fas fa-map-marker-alt"></i> West Virginia, US
+                            <i class="fas fa-map-marker-alt"></i><?php echo $company_branch_data['location']; ?>
                         </li>
                         <li class="list-inline-item">
-                            <i class="far fa-calendar-alt"></i> <span>Joined November 2017</span>
+                            <i class="far fa-calendar-alt"></i> <span><?php echo $company_data['registration_date']; ?></span>
                         </li>
                     </ul>
                 </div>
-                <div class="row">
-                    <div class="col-lg-4">
-                        <div class="card card-body">
-                            <h5>Complete your profile</h5>
+                <div class="col-md-12">
+                    <div class="card bg-white">
+                        <div class="card-body">
+                            <ul class="nav nav-tabs nav-tabs-solid nav-tabs-rounded nav-justified">
+                                <li class="nav-item"><a class="nav-link active" href="#solid-rounded-justified-tab1" data-bs-toggle="tab">Profile</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#solid-rounded-justified-tab2" data-bs-toggle="tab">Company</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane show active" id="solid-rounded-justified-tab1">
+                                    <div class="tab-pane show active" id="solid-rounded-justified-tab1">
+                                        <div class="col-lg-12">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h5 class="card-title d-flex justify-content-between">
+                                                        <span>Profile</span>
+                                                        <a class="btn btn-sm btn-white" href="edit_profile.php">Edit</a>
+                                                        <a class="btn btn-sm btn-success" href="change_password.php">Badal Passwordka</a>
+                                                    </h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <ul class="list-unstyled mb-0">
+                                                        <li class="py-0">
+                                                            <h6>Ku saabsan Isticmaalaha</h6>
+                                                        </li>
+                                                        <li>
+                                                            <h3>Magaca:
+                                                                <strong><?php echo $user_data['full_name']; ?></strong>
+                                                            </h3>
 
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="progress progress-md flex-grow-1">
-                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 30%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </li>
+                                                        <li>
+                                                            <h3>Username:
+                                                                <strong><?php echo $user_data['username']; ?></strong>
+                                                            </h3>
+                                                        </li>
+
+
+                                                        <li>
+                                                            <h3>Telephoneka: <strong> <?php echo $company_data['phone_number']; ?>
+                                                                </strong></h3>
+                                                        </li>
+                                                        <li class="pt-2 pb-0">
+                                                            <h6>Taariikhda Lacag Bixinta</h6>
+                                                        </li>
+                                                        <li>
+                                                            <strong> <?php echo $user_data['deactivation_date']; ?>, <?php
+                                                                                                                        $deactivation_date = new DateTime($user_data['deactivation_date']);
+                                                                                                                        $current_date = new DateTime();
+                                                                                                                        $interval = $current_date->diff($deactivation_date);
+                                                                                                                        echo $interval->format('%a cisho kadib');
+                                                                                                                        ?>
+
+                                                            </strong>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <span class="ms-4">30%</span>
-                            </div>
+                                <div class="tab-pane" id="solid-rounded-justified-tab2">
+                                    <div class="tab-pane" id="solid-rounded-justified-tab2">
+                                        <div class="col-lg-12">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <h5 class="card-title d-flex justify-content-between">
+                                                        <span>Macluumaadka Ganacsiga</span>
+                                                        <a class="btn btn-sm btn-white" href="edit_company.php">Edit</a>
+                                                    </h5>
+                                                </div>
+                                                <div class="card-body">
+                                                    <ul class="list-unstyled mb-0">
+                                                        <li>
+                                                            Magaca Ganacsiga: <?php echo $company_data['business_name']; ?>
+                                                        </li>
+                                                        <li>
+                                                            Nooca Ganacsiga: <?php echo $company_data['business_type']; ?>
+                                                        </li>
 
-                        </div>
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-title d-flex justify-content-between">
-                                    <span>Profile</span>
-                                    <a class="btn btn-sm btn-white" href="settings.html">Edit</a>
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <ul class="list-unstyled mb-0">
-                                    <li class="py-0">
-                                        <h6>About</h6>
-                                    </li>
-                                    <li>
-                                        Charles Hafner
-                                    </li>
-                                    <li>
-                                        Hafner Pvt Ltd.
-                                    </li>
-                                    <li class="pt-2 pb-0">
-                                        <h6>Contacts</h6>
-                                    </li>
-                                    <li>
-                                        <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="72111a13001e17011a13141c170032170a131f021e175c111d1f">[email&#160;protected]</a>
-                                    </li>
-                                    <li>
-                                        +1 (304) 499-13-66
-                                    </li>
-                                    <li class="pt-2 pb-0">
-                                        <h6>Address</h6>
-                                    </li>
-                                    <li>
-                                        4663 Agriculture Lane,<br>
-                                        Miami,<br>
-                                        Florida - 33165,<br>
-                                        United States.
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-8">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-title">Activity</h5>
-                            </div>
-                            <div class="card-body card-body-height">
-                                <ul class="activity-feed">
-                                    <li class="feed-item">
-                                        <div class="feed-date">Nov 16</div>
-                                        <span class="feed-text"><a href="profile.html">Brian Johnson</a> has paid the invoice <a href="view-invoice.html">"#DF65485"</a></span>
-                                    </li>
-                                    <li class="feed-item">
-                                        <div class="feed-date">Nov 7</div>
-                                        <span class="feed-text"><a href="profile.html">Marie Canales</a> has accepted your estimate <a href="view-estimate.html">#GTR458789</a></span>
-                                    </li>
-                                    <li class="feed-item">
-                                        <div class="feed-date">Oct 24</div>
-                                        <span class="feed-text">New expenses added <a href="expenses.html">"#TR018756</a></span>
-                                    </li>
-                                    <li class="feed-item">
-                                        <div class="feed-date">Oct 24</div>
-                                        <span class="feed-text">New expenses added <a href="expenses.html">"#TR018756</a></span>
-                                    </li>
-                                    <li class="feed-item">
-                                        <div class="feed-date">Oct 24</div>
-                                        <span class="feed-text">New expenses added <a href="expenses.html">"#TR018756</a></span>
-                                    </li>
-                                    <li class="feed-item">
-                                        <div class="feed-date">Oct 24</div>
-                                        <span class="feed-text">New expenses added <a href="expenses.html">"#TR018756</a></span>
-                                    </li>
-                                    <li class="feed-item">
-                                        <div class="feed-date">Oct 24</div>
-                                        <span class="feed-text">New expenses added <a href="expenses.html">"#TR018756</a></span>
-                                    </li>
-                                    <li class="feed-item">
-                                        <div class="feed-date">Jan 27</div>
-                                        <span class="feed-text"><a href="profile.html">Robert Martin</a> gave a review for <a href="product-details.html">"Dell Laptop"</a></span>
-                                    </li>
-                                    <li class="feed-item">
-                                        <div class="feed-date">Jan 14</div>
-                                        <span class="feed-text">New customer registered <a href="profile.html">"Tori Carter"</a></span>
-                                    </li>
-                                </ul>
+                                                        <li>
+                                                            Phone Number: <a href="tel:<?php echo $company_data['phone_number']; ?>"><?php echo $company_data['phone_number']; ?></a>
+                                                        </li>
+                                                        <li class="pt-2 pb-0">
+                                                            <p> Taariikhda Diwaangalinta: <strong><?php echo $company_data['registration_date']; ?>
+                                                                </strong> </p>
+                                                        </li>
+                                                        <li>
+                                                            Magaca Laanta: <?php echo $company_branch_data['branch_name']; ?>
+                                                        </li>
+                                                        <li>
+                                                            Goobta: <?php echo $company_branch_data['location']; ?>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -161,21 +168,13 @@ require './includes/sidebar.php';
             </div>
         </div>
     </div>
-</div>
 
-</div>
+    <script data-cfasync="false" src="../../../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script src="assets/js/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/feather.min.js"></script>
+    <script src="assets/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="assets/js/script.js"></script>
+    </body>
 
-
-<script data-cfasync="false" src="../../../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
-<script src="assets/js/jquery-3.6.0.min.js"></script>
-
-<script src="assets/js/bootstrap.bundle.min.js"></script>
-
-<script src="assets/js/feather.min.js"></script>
-
-<script src="assets/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-
-<script src="assets/js/script.js"></script>
-</body>
-
-</html>
+    </html>

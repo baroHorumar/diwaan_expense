@@ -1,0 +1,167 @@
+
+CREATE TABLE faculties (
+  faculty_id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) DEFAULT NULL,
+  phone VARCHAR(20) DEFAULT NULL
+);
+
+
+CREATE TABLE batch (
+  batch_id INT AUTO_INCREMENT PRIMARY KEY,
+  batch_year DATE,
+  Created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  Updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  Created_by VARCHAR(50),
+  Updated_by VARCHAR(50),
+  totalGraduate INT
+);
+
+CREATE TABLE alumni (
+  Id INT AUTO_INCREMENT PRIMARY KEY,
+  student_id VARCHAR(10) NOT NULL,
+  FirstName VARCHAR(50) DEFAULT NULL,
+  LastName VARCHAR(50) DEFAULT NULL,
+  Sex VARCHAR(10) DEFAULT NULL,
+  Email VARCHAR(50) DEFAULT NULL,
+  Img VARCHAR(255) DEFAULT NULL,
+  Dob DATETIME DEFAULT NULL,
+  ContactNumber INT DEFAULT NULL,
+  Address VARCHAR(100) DEFAULT NULL,
+  empl_state VARCHAR(50) DEFAULT NULL,
+  StuddingState VARCHAR(100) DEFAULT NULL,
+  faculty_id INT DEFAULT NULL,
+  DegreeType VARCHAR(100) DEFAULT NULL,
+  EnrollmentYear DATETIME DEFAULT NULL,
+  batch_id INT DEFAULT NULL,
+  Fid VARCHAR(255) DEFAULT NULL,
+  Linked VARCHAR(255) DEFAULT NULL,
+  Tweet VARCHAR(255) DEFAULT NULL,
+  Username VARCHAR(50) DEFAULT NULL,
+  Password VARCHAR(20) DEFAULT NULL,
+  Created_at DATE DEFAULT NULL,
+  Updated_at DATE DEFAULT NULL,
+  Created_by VARCHAR(50) DEFAULT NULL,
+  Updated_by VARCHAR(50) DEFAULT NULL,
+  role VARCHAR(20) DEFAULT 'Alumni',
+  CoverImagePath VARCHAR(255) DEFAULT NULL,
+  AvatarImagePath VARCHAR(255) DEFAULT NULL,
+  CONSTRAINT fk_batch_id FOREIGN KEY (batch_id) REFERENCES batch (batch_id),
+  CONSTRAINT fk_faculty_id FOREIGN KEY (faculty_id) REFERENCES faculties (faculty_id)
+);
+
+
+CREATE TABLE blog (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  image VARCHAR(255) NOT NULL,
+  category VARCHAR(100) DEFAULT NULL,
+  description TEXT NOT NULL,
+  created_at DATE DEFAULT CURRENT_TIMESTAMP,
+  alumni_id INT DEFAULT NULL,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  status ENUM('pending','approved') DEFAULT 'pending',
+  Num_of_read INT NOT NULL,
+  CONSTRAINT fk_alumni_id FOREIGN KEY (alumni_id) REFERENCES alumni (Id)
+);
+
+CREATE TABLE chat (
+  ChatId INT AUTO_INCREMENT PRIMARY KEY,
+  SenderId INT DEFAULT NULL,
+  ReceiverId INT DEFAULT NULL,
+  Message TEXT DEFAULT NULL,
+  Timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  is_read TINYINT DEFAULT NULL,
+  CONSTRAINT fk_sender_id FOREIGN KEY (SenderId) REFERENCES alumni (Id),
+  CONSTRAINT fk_receiver_id FOREIGN KEY (ReceiverId) REFERENCES alumni (Id)
+);
+
+CREATE TABLE comments (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  post_id INT DEFAULT NULL,
+  alumni_id INT DEFAULT NULL,
+  comment_text TEXT DEFAULT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_post_id FOREIGN KEY (post_id) REFERENCES blog (id) ON DELETE CASCADE,
+  CONSTRAINT fk_alumni_id_comments FOREIGN KEY (alumni_id) REFERENCES alumni (Id)
+);
+
+CREATE TABLE discussion_forum (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  description TEXT DEFAULT NULL,
+  faculty_id INT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_faculty_id_discussion FOREIGN KEY (faculty_id) REFERENCES faculties (faculty_id)
+);
+
+CREATE TABLE discussion_forum_messages (
+  message_id INT AUTO_INCREMENT PRIMARY KEY,
+  forum_id INT DEFAULT NULL,
+  user_id INT DEFAULT NULL,
+  message TEXT DEFAULT NULL,
+  timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_forum_id FOREIGN KEY (forum_id) REFERENCES discussion_forum (id),
+  CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES alumni (Id)
+);
+
+
+
+CREATE TABLE jobs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  image VARCHAR(255) NOT NULL,
+  job_title VARCHAR(255) NOT NULL,
+  company VARCHAR(255) NOT NULL,
+  location VARCHAR(255) NOT NULL,
+  description TEXT NOT NULL,
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
+  apply_link VARCHAR(255) DEFAULT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  alumni_id INT DEFAULT NULL,
+  status ENUM('pending','approved') NOT NULL DEFAULT 'pending',
+  CONSTRAINT fk_alumni_id_jobs FOREIGN KEY (alumni_id) REFERENCES alumni (Id)
+);
+
+CREATE TABLE login_events (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  login_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  logout_time TIMESTAMP NULL DEFAULT NULL,
+  CONSTRAINT fk_user_id_login FOREIGN KEY (user_id) REFERENCES alumni (Id)
+);
+
+CREATE TABLE materials (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  alumni_id INT DEFAULT NULL,
+  number_of_downloads INT DEFAULT 0,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  file VARCHAR(255) NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  description TEXT NOT NULL,
+  CONSTRAINT fk_alumni_id_materials FOREIGN KEY (alumni_id) REFERENCES alumni (Id)
+);
+
+CREATE TABLE reader (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  post_id INT DEFAULT NULL,
+  reader_id INT DEFAULT NULL,
+  read_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  num_of_reads INT DEFAULT NULL,
+  CONSTRAINT fk_post_id_reader FOREIGN KEY (post_id) REFERENCES blog (id),
+  CONSTRAINT fk_reader_id FOREIGN KEY (reader_id) REFERENCES alumni (Id)
+);
+
+CREATE TABLE replies (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  comment_id INT DEFAULT NULL,
+  post_id INT DEFAULT NULL,
+  alumni_id INT DEFAULT NULL,
+  username VARCHAR(255) DEFAULT NULL,
+  reply_text TEXT DEFAULT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_comment_id FOREIGN KEY (comment_id) REFERENCES comments (id) ON DELETE CASCADE,
+  CONSTRAINT fk_post_id_replies FOREIGN KEY (post_id) REFERENCES blog (id) ON DELETE CASCADE,
+  CONSTRAINT fk_alumni_id_replies FOREIGN KEY (alumni_id) REFERENCES alumni (Id)
+);

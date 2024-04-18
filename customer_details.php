@@ -6,11 +6,10 @@ if (!isset($_SESSION['login'])) {
 require './includes/header.php';
 require './includes/sidebar.php';
 include './includes/conn.php';
-if (isset($_GET['customer_id'])) {
-    $customer_id = $_GET['customer_id'];
-
-    // Fetch customer details from the database
-    $sql = "SELECT cust_full_name, phone_number, grand_balance FROM customer WHERE cust_id = ?";
+if (isset($_SESSION['customer_id_go'])) {
+    $customer_id = $_SESSION['customer_id_go'];
+    unset($_SESSION['customer_id_go']);
+    $sql = "SELECT cust_id,cust_full_name, phone_number, grand_balance FROM customer WHERE cust_id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $customer_id);
     $stmt->execute();
@@ -20,12 +19,12 @@ if (isset($_GET['customer_id'])) {
         $cust_full_name = $row['cust_full_name'];
         $phone_number = $row['phone_number'];
         $grand_balance = $row['grand_balance'];
+        $cust_id123 = $row['cust_id'];
     }
 
-    // Fetch transactions for the customer from the database
     $sql_transactions = "SELECT cust_tra_id,amount, created_at, status, description, return_date, total FROM cust_transaction WHERE customer_id = ?";
     $stmt_transactions = $conn->prepare($sql_transactions);
-    $stmt_transactions->bind_param("i", $customer_id);
+    $stmt_transactions->bind_param("i", $cust_id123);
     $stmt_transactions->execute();
     $result_transactions = $stmt_transactions->get_result();
 ?>
@@ -59,8 +58,8 @@ if (isset($_GET['customer_id'])) {
                     </div>
                     <div class="col-lg-2 col-sm-1 col-12">
                         <div class="invoices-settings-btn invoices-settings-btn-one a-center">
-                            <a href="add_cust_transaction.php?customer_id=<?php echo $customer_id; ?>" class="btn">
-                                <i data-feather="plus-circle"></i> wax kala iibsiga
+                            <a class="btn" href="add_cust_transaction.php">
+                                <i data-feather="plus-circle" onclick="<?php $_SESSION['cust_id'] = $cust_id123; ?>"></i> wax kala iibsiga
                             </a>
                         </div>
                     </div>
@@ -207,10 +206,8 @@ if (isset($_GET['customer_id'])) {
             }
         }
     </script>
-    <!-- Update the modal body to display transaction details -->
     <script>
         function showTransactionDetails(transaction_id) {
-            // AJAX request to fetch transaction details
             $.ajax({
                 url: 'fetch_transaction_details.php', // Create this PHP file to handle AJAX request
                 type: 'POST',
@@ -240,9 +237,39 @@ if (isset($_GET['customer_id'])) {
             });
         }
     </script>
+    <script src="assets/js/jquery-3.6.0.min.js"></script>
 
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+
+    <script src="assets/js/feather.min.js"></script>
+
+    <script src="assets/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+    <script src="assets/plugins/select2/js/select2.min.js"></script>
+
+    <script src="assets/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="assets/plugins/datatables/datatables.min.js"></script>
+
+    <script src="assets/plugins/moment/moment.min.js"></script>
+    <script src="assets/js/bootstrap-datetimepicker.min.js"></script>
+
+    <script src="assets/js/script.js"></script>
+
+
+    <!-- <script>
+    function redirectToCustomerDetails(customer_id) {
+        <?php
+        //$_SESSION['customer_id_go'] = $customer_id; // Set the session variable
+        ?>
+        window.location.href = 'customer_details.php'; // Redirect to customer_details.php
+    }
+</script> -->
+
+    </body>
+
+    </html>
 <?php
-    require './includes/footer.php';
+
 } else {
     echo "Customer ID not provided";
 }
