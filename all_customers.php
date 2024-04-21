@@ -30,9 +30,7 @@ while ($row = $result->fetch_assoc()) {
                     <a href="add_customer.php" class="btn btn-primary">
                         <i class="fas fa-plus"></i>
                     </a>
-                    <!-- <a class="btn btn-primary filter-btn" href="javascript:void(0);" id="filter_search">
-                        <i class="fas fa-filter"></i>
-                    </a> -->
+
                 </div>
             </div>
         </div>
@@ -90,28 +88,7 @@ while ($row = $result->fetch_assoc()) {
                     <div class="card <?php echo $customer['grand_balance'] < 0 ? 'bg-warning-light' : 'bg-success-light'; ?>">
                         <div class="card-body">
                             <div class="inv-header mb-3">
-                                <script>
-                                    function redirectToCustomerDetails(customer_id) {
-                                        $.ajax({
-                                            url: 'set_session.php', // PHP script to set the session variable
-                                            method: 'POST',
-                                            data: {
-                                                customer_id: customer_id
-                                            },
-                                            success: function(response) {
-                                                // Redirect to customer_details.php after setting the session variable
-                                                window.location.href = 'customer_details.php';
-                                            },
-                                            error: function(xhr, status, error) {
-                                                console.error(xhr.responseText); // Log any errors
-                                            }
-                                        });
-                                    }
-                                </script>
-                                <a class="text-dark" href="#" onclick="redirectToCustomerDetails(<?php echo $customer['cust_id']; ?>);">
-                                    <h3 class="text-center"><?php echo $customer['cust_full_name']; ?></h3>
-                                </a>
-
+                                <h3 class="text-center"><?php echo $customer['cust_full_name']; ?></h3>
                             </div>
                             <div class="invoice-id mb-3">
                                 <p class="text-yellow text-center ">Phone Number:<?php echo ' ' . $customer['phone_number']; ?></p>
@@ -130,7 +107,12 @@ while ($row = $result->fetch_assoc()) {
                         <div class="card-footer">
                             <div class="row align-items-center">
                                 <div class="col-auto">
-                                    <span class="badge bg-success-light"><?php echo $customer['address']; ?></span>
+                                    <form action="customer_details.php" method="post">
+                                        <input type="hidden" name="customer_id" value="<?php echo $customer['cust_id']; ?>">
+                                        <button type="submit" class="btn btn-primary " name="customer_details">
+                                            <i data-feather="settings"></i> Maaree
+                                        </button>
+                                    </form>
                                 </div>
                                 <div class="col d-flex justify-content-end">
                                     <form action="edit_customer.php" method="POST" class="me-2">
