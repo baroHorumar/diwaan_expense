@@ -130,7 +130,7 @@ if (!isset($_POST['status']) && !isset($_POST['wakhti'])) {
         <div class="page-header">
             <div class="row justify-content-end">
                 <div class="col-auto">
-                    <a href="add_customer.php" class="btn btn-primary">
+                    <a href="add_expenses.php" class="btn btn-primary">
                         <i class="fas fa-plus"></i>
                     </a>
                     <a class="btn btn-primary filter-btn" href="javascript:void(0);" id="filter_search">
